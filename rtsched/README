@@ -1,0 +1,93 @@
+rtsched
+=======
+The rtsched module provides soft real-time support for python programmes when running under Linux 2.2 or 2.4 kernels.
+
+The scheduler is the kernel part that decides which runnable process will be executed by the CPU next. The Linux scheduler offers three different scheduling policies, one for normal processes and two for real-time applications. A static priority value is assigned to each process and this value can be changed only via system calls. 
+
+Conceptually, the scheduler maintains a list or runnable processes for each possible priority value, and priority can have the value in the range 0 to 99. In order to determine the process that runs next, the Linux scheduler looks for the non-empty list with the highest static priority and takes the process at the head of the list. The scheduling policy determines for each process how it will be inserted into this set of equal priority processes, and how it will then move inside this list.
+
+The schedule OTHER is the default time-sharing scheduler policy used by almost all processes.  FIFO and RR are for special time-critical applications that need precise control over the way in which runnable processes are selected for execution. OTHER processes can only have a priority value of 0. Those with FIFO or RR scheduling can be assigned priorities between 1 and 99.
+
+Only super user processes can be scheduled as FIFO or RR. All scheduling is preemptive. If a process with a hicher priority gets ready to run, the current process will be preempted and returned into a waiting state. The scheduling policy only determines the ordering within a priority level.
+
+FIFO: First In First Out Scheduling
+-----------------------------------
+FIFO scheduled processes must have a priority higher than 0. Thus when a FIFO process becomes runnable, it will always immediately preempt any currently running OTHER process. FIFO is a simple scheduling algorithm without time slicing. 
+
+A FIFO process that has been preempted by another process of higher priority will stay at the head of the list for its priority and will resume execution as soon as all higher priority processes are blocked. When a FIFO process becomes runnable, it will be inserted at the end of the list for its priority. A call to setscheduler() will put the FIFO process identified at the end of the list if it was runnable. A process calling syield() will be put at the end of the list. No other events will move a process scheduled under the FIFO policy in the wait list of runnable processes with equal priority.
+
+Thus a FIFO process runs until either it is blocked by an I/O request, is preempted by a higher priority process, or it calls syield()
+
+RR: Round Robin Scheduling
+--------------------------
+RR is a simple enhancement of FIFO. Everything described for FIFO applies to RR, except that each process is only allowed to run for a maximum time quantum. If a RR process has been running for a time period equal to or longer than the time quantum, it will be put at the end of the list for its priority.
+
+A RR process that has been preempted by a higher priority process and subsequently resumes execution as a running process will complete the unexpired portion of its round robin time quantum. The length of the time quantum can be retrieved by getinterval()
+ 
+OTHER: Default Linux time-sharing scheduling
+--------------------------------------------
+OTHER can only be set at a priority of 0. OTHER is the standard Linux time-sharing scheduler that is intended for all processes that do not require special static priority real-time mechanisms. The process to run is chosen from the static priority 0 list based  on a dynamic priority that is determined only inside this list. 
+
+The dynamic priority is based on the nice level (set by the nice or setpriority system call) and increased for each time quantum the process is ready to run, but denied to run by the scheduler. This ensures fair progress among all OTHER processes.
+
+Miscellaneous
+-------------
+Child processes inherit the scheduling algorithm and parameters across a fork.
+
+Memory locking is usually needed for real-time processes to avoid paging delays, this can be done with mlock() or mlockall().
+
+As a non-blocking end-less loop in a process scheduled under FIFO or RR will block all processes with lower priority forever, a software developer should always keep available on the console a shell scheduled under a higher static priority than the tested application. This will allow an emergency kill of tested real-time applications that do not block or terminate as expected. As FIFO and RR processes can preempt other processes forever, only root processes are allowed to activate these policies under Linux.
+
+Variables
+=========
+The rtsched has the following variables
+
+OTHER						Standard linux scheduling policy
+FIFO						FIFO scheduling policy
+RR							Round Robin scheduling policy
+
+Functions
+=========
+
+setscheduler( [pid [, policy [, priority ] ] ] )
+------------------------------------------------
+Sets process pid (defaults to the 0 - meaning the present calling process) to scheduling policy, policy (by default OTHER) and priority, priority (by default 0)
+
+
+(policy, priority)=getscheduler( [pid] )
+----------------------------------------
+Returns the policy and priority of process pid (defaults to 0 - the present process)
+
+
+nanosleep( nanoseconds )
+------------------------
+Sleeps the requested number of nanoseconds
+
+
+usleep( microseconds )
+----------------------
+Sleeps the requested number of microseconds
+
+
+msleep( milliseconds )
+----------------------
+Sleeps the requested number of milliseconds
+
+
+time = utime()
+--------------
+Returns the current time as a value in microseconds (usefule with the sched standard module)
+
+
+time = mtime()
+--------------
+Returns the current time as a value in milliseconds
+
+syield()
+--------
+A process can relinquish the processor voluntarily without blocking by calling sched_yield. The process will then be moved to the end of the queue for its static priority and a new process gets to run. Note: If the current process is the only process in the highest priority list at that time, this process will continue to run after a call to yield()
+
+Exceptions
+==========
+
+SchedError: an error raised for various errors that may occur in setting the scheduling

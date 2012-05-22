@@ -1,0 +1,6 @@
+Installation
+============
+
+make -f Makefile.pre.in boot
+make
+su -c 'make install'

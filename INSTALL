@@ -1,0 +1,7 @@
+Installation
+============
+
+cpu_cycles_per_second > HRTime.h
+make -f Makefile.pre.in boot
+make
+su -c 'make install'

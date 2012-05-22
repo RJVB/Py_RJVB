@@ -1,0 +1,30 @@
+1i\
+# Generated automatically from Makefile.pre.in by sedscript.
+s%@VERSION[@]%2.4%
+s%@CC[@]%gcc-4.0.0%
+s%@CXX[@]%g++-4.0.0%
+s%@LINKCC[@]%$(PURIFY) $(CXX)%
+s%@RANLIB[@]%ranlib%
+s%@OPT[@]%-DNDEBUG -mcpu=G5 -mtune=G5 -mpowerpc -mpowerpc-gfxopt -mpowerpc-gpopt -mpowerpc64 -mhard-float -mpowerpc-gfxopt -mnew-mnemonics -mhard-float -mnew-mnemonics -mstring -misel=yes -fomit-frame-pointer -fdollars-in-identifiers -O3 -fexpensive-optimizations -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -finline-functions -funroll-loops -fno-strict-aliasing -mfused-madd -ftree-vectorize -ftracer -faltivec%
+s%@BASECFLAGS[@]%-fno-strict-aliasing -Wno-long-double -no-cpp-precomp -fno-common -dynamic%
+s%@LDFLAGS[@]%%
+s%@LDLAST[@]%		%
+s%@SGI_ABI[@]%%
+s%@CCSHARED[@]%%
+s%@LINKFORSHARED[@]%-u _PyMac_Error $(PYTHONFRAMEWORKDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)%
+s%@MACHDEP[@]%darwin%
+s%^prefix=.*%prefix=		/Library/Frameworks/Python.framework/Versions/2.4%
+s%^exec_prefix=.*%exec_prefix=	${prefix}%
+s%@SO[@]%.so%
+s%@LDSHARED[@]%$(CC) $(LDFLAGS) -bundle -undefined dynamic_lookup%
+s%@PYTHONFRAMEWORK[@]%Python%
+s%@LIBS[@]%-ldl %
+s%@LIBM[@]%%
+s%@LIBC[@]%%
+/^installdir=/s%=.*%=	/Library/Frameworks/Python.framework/Versions/2.4%
+/^exec_installdir=/s%=.*%=/Library/Frameworks/Python.framework/Versions/2.4%
+/^srcdir=/s%=.*%=		.%
+/^VPATH=/s%=.*%=		.%
+/^LINKPATH=/s%=.*%=	%
+/^BASELIB=/s%=.*%=	%
+/^BASESETUP=/s%=.*%=	%
