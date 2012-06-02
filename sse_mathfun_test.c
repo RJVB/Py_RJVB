@@ -1,4 +1,7 @@
 /*
+RJVB:
+gccopt -DHAVE_VECLIB -DUSE_SSE_AUTO -o sse_mathfun_test sse_mathfun_test.c -framework Accelerate
+
 results on a macbook with 1.83GHz Core 1 Duo (apple gcc 4.0.1)
 command line: gcc -O2 -Wall -W -DHAVE_VECLIB -msse sse_mathfun_test.c -framework Accelerate
 
@@ -517,6 +520,13 @@ v4sf stupid_sincos_ps(v4sf x) {
   sincos_ps(x, &s, &c);
   return s;
 }
+#ifdef USE_SSE2
+v2df stupid_sincos_pd(v2df x) {
+  v2df s, c;
+  sincos_pd(x, &s, &c);
+  return s;
+}
+#endif
 
 #ifdef HAVE_VECLIB
 vFloat stupid_vsincosf(vFloat arg)
@@ -553,6 +563,9 @@ DECL_SCALAR_FN_BENCH(cephes_logf);
 DECL_VECTOR_FN_BENCH(sin_ps);
 DECL_VECTOR_FN_BENCH(cos_ps);
 DECL_VECTOR_FN_BENCH(stupid_sincos_ps);
+#ifdef USE_SSE2
+DECL_VECTOR_FN_BENCH64(stupid_sincos_pd);
+#endif
 DECL_VECTOR_FN_BENCH(exp_ps);
 DECL_VECTOR_FN_BENCH(log_ps);
 #ifdef HAVE_VECLIB
@@ -679,6 +692,7 @@ int main() {
   run_bench("sin_ps", bench_sin_ps);
   run_bench("cos_ps", bench_cos_ps);
   run_bench("sincos_ps", bench_stupid_sincos_ps);
+  run_bench("sincos_pd", bench_stupid_sincos_pd);
   run_bench("exp_ps", bench_exp_ps);
   run_bench("log_ps", bench_log_ps);
 

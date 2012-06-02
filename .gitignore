@@ -20,13 +20,9 @@ emsg
 timings
 tmp/*
 *_m
-
 DataFrame.py2k
-
 DataFrame.py3k
-
 rebin.py2k
-
 NaN.old.h
-
 rebin.py3k
+sse_mathfun_test
