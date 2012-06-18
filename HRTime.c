@@ -451,6 +451,16 @@ static PyObject *HRTime_timeofday( PyObject *self, PyObject *args )
 	return PyFloat_FromDouble(seconds);
 }
 
+/*DOC*/ static char doc_tic[] =
+/*DOC*/    "HRTime.tic() -> None\n"
+/*DOC*/    "mark start of a timing interval"
+/*DOC*/ ;
+
+/*DOC*/ static char doc_toc[] =
+/*DOC*/    "HRTime.toc() -> double\n"
+/*DOC*/    "returns the number of seconds elapsed since the last HRTime.tic() invocation"
+/*DOC*/ ;
+
 /* 
  * the modules (HRTime's) object refs
  * -----------------------------------
@@ -458,8 +468,8 @@ static PyObject *HRTime_timeofday( PyObject *self, PyObject *args )
 static PyMethodDef HRTime_methods[] =
 {
 	{ "HRTime", HRTime_HRTime, METH_VARARGS, doc_HRTime },
-	{ "tic", HRTime_tic, METH_VARARGS, doc_HRTime },
-	{ "toc", HRTime_toc, METH_VARARGS, doc_HRTime },
+	{ "tic", HRTime_tic, METH_VARARGS, doc_tic },
+	{ "toc", HRTime_toc, METH_VARARGS, doc_toc },
 	{ "nanosleep", HRTime_nanosleep, METH_VARARGS, doc_nanosleep },
 	{ "usleep", HRTime_usleep, METH_VARARGS, doc_usleep },
 	{ "timeofday", HRTime_timeofday, METH_VARARGS, doc_timeofday },
