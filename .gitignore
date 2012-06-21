@@ -26,3 +26,9 @@ rebin.py2k
 NaN.old.h
 rebin.py3k
 sse_mathfun_test
+CritSectEx/CritSectEx_wrap.cxx
+CritSectEx/MSEmul.py
+CritSectEx/msemul.py
+CritSectEx/msemul_wrap.cxx
+CritSectEx/CritSectEx.py
+CritSectEx/CritSectEx_wrap.c
