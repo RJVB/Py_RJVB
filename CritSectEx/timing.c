@@ -5,9 +5,6 @@
  *
  */
 
-#include "copyright.h"
-IDENTIFY("Timing routines");
-
 #include <stdio.h>
 
 #ifdef __MACH__

@@ -97,6 +97,14 @@ typedef void*		PVOID;
 #	ifndef DWORD
 		typedef uint32_t	DWORD;
 #	endif
+#	ifdef SWIG
+%typemap(in) DWORD {
+	$1 = (DWORD) PyInt_AsLong($input);
+}
+%typemap(out) DWORD {
+	$result = PyInt_FromLong($1);
+}
+#	endif //SWIG
 
 	/*!
 	 the types of MS Windows HANDLEs that we can emulate:
@@ -481,7 +489,7 @@ static inline DWORD GetLastError()
 
 #	define WAIT_ABANDONED	0
 #	define WAIT_OBJECT_0	1
-#	define WAIT_TIMEOUT	2
+#	define WAIT_TIMEOUT		2
 
 /*!
  Release the given semaphore.
@@ -550,8 +558,8 @@ extern "C" {
 	extern DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
 	extern HANDLE CreateSemaphore( void* ign_lpSemaphoreAttributes, long lInitialCount, long ign_lMaximumCount, char *lpName );
 	extern HANDLE CreateMutex( void *ign_lpMutexAttributes, BOOL bInitialOwner, char *ign_lpName );
-	extern HANDLE msCreateEvent( void *ign_lpEventAttributes, BOOL bManualReset, BOOL bInitialState, char *ign_lpName );
-#	define CreateEvent(A,R,I,N)	msCreateEvent((A),(R),(I),(N))
+	extern HANDLE CreateEvent( void *ign_lpEventAttributes, BOOL bManualReset, BOOL bInitialState, char *ign_lpName );
+// #	define CreateEvent(A,R,I,N)	msCreateEvent((A),(R),(I),(N))
 	extern HANDLE CreateThread( void *ign_lpThreadAttributes, size_t ign_dwStackSize, void *(*lpStartAddress)(void *),
 				void *lpParameter, DWORD dwCreationFlags, DWORD *lpThreadId );
 	extern DWORD ResumeThread( HANDLE hThread );
