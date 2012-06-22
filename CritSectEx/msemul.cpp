@@ -139,10 +139,11 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 				}
 				if( pthread_mutex_lock( hHandle->d.e.mutex ) == 0 ){
 					hHandle->d.e.waiter = pthread_self();
+					errno = 0;
 					if( (err = pthread_cond_timedwait( hHandle->d.e.cond, hHandle->d.e.mutex, &timeout )) ){
 						pthread_mutex_unlock( hHandle->d.e.mutex );
 						hHandle->d.e.waiter = 0;
-						return (err == ETIMEDOUT)? WAIT_TIMEOUT : WAIT_ABANDONED;
+						return (err == ETIMEDOUT || errno == ETIMEDOUT)? WAIT_TIMEOUT : WAIT_ABANDONED;
 					}
 					else{
 						pthread_mutex_unlock( hHandle->d.e.mutex );
@@ -207,9 +208,11 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 			// get the mutex and then wait for the condition to be signalled:
 			if( pthread_mutex_lock( hHandle->d.e.mutex ) == 0 ){
 				hHandle->d.e.waiter = pthread_self();
+					fprintf( stderr, "### %lu waiting on condition %lu... ", hHandle->d.e.waiter, hHandle->d.e.cond ); fflush(stderr);
 				if( pthread_cond_wait( hHandle->d.e.cond, hHandle->d.e.mutex ) ){
 					pthread_mutex_unlock( hHandle->d.e.mutex );
 					hHandle->d.e.waiter = 0;
+					fprintf( stderr, "abandoned\n" ); fflush(stderr);
 					return WAIT_ABANDONED;
 				}
 				else{
@@ -218,6 +221,7 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 					if( !hHandle->d.e.isManual ){
 						_InterlockedSetFalse(hHandle->d.e.isSignalled);
 					}
+					fprintf( stderr, "success, signalled=%d\n", hHandle->d.e.isSignalled ); fflush(stderr);
 					return WAIT_OBJECT_0;
 				}
 			}
