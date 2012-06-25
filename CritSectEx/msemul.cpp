@@ -36,6 +36,14 @@ static BOOL theMSEShMemListReady = FALSE;
 typedef google::dense_hash_map<void*,size_t> MSEShMemLists;
 static MSEShMemLists theMSEShMemList;
 
+typedef google::dense_hash_map<HANDLE,MSHANDLETYPE> OpenHANDLELists;
+static OpenHANDLELists theOpenHandleList;
+static google::dense_hash_map<int,const char*> HANDLETypeName;
+static BOOL theOpenHandleListReady = FALSE;
+
+static pthread_key_t currentThreadKey = 0;
+bool ForceCloseHandle(HANDLE);
+
 void MSEfreeShared(void *ptr)
 { static short calls = 0;
 	if( ptr && theMSEShMemList.count(ptr) ){
@@ -63,11 +71,20 @@ void MSEfreeShared(void *ptr)
 
 void MSEfreeAllShared()
 { 
+	if( currentThreadKey ){
+		// this means that at least one invocation to GetCurrentThread was made, and
+		// thus that there is a corresponding entry in theOpenHandleList that will not have
+		// been removed. Do that now - and of course BEFORE we release dangling memory ...
+		ForceCloseHandle( GetCurrentThread() );
+	}
 	while( theMSEShMemList.size() > 0 ){
 	  MSEShMemLists::iterator i = theMSEShMemList.begin();
 	  std::pair<void*,size_t> elem = *i;
 //		fprintf( stderr, "MSEfreeShared(0x%p) of %lu remaining elements\n", elem.first, theMSEShMemList.size() );
 		MSEfreeShared(elem.first);
+	}
+	if( theOpenHandleListReady && theOpenHandleList.size() ){
+		fprintf( stderr, "@@@ Exit with %lu HANDLEs still open\n", theOpenHandleList.size() );
 	}
 }
 
@@ -109,6 +126,41 @@ void *MSEreallocShared( void* ptr, size_t N, size_t oldN )
 		}
 	}
 	return( mem );
+}
+
+static char *mmstrdup( char *str )
+{ char *ret = NULL;
+	if( (ret = (char*) MSEreallocShared(NULL, strlen(str), 0 )) ){
+		strcpy( ret, str );
+	}
+	return ret;
+}
+
+void RegisterHANDLE(HANDLE h)
+{
+	if( !theOpenHandleListReady ){
+		theOpenHandleList.set_empty_key(NULL);
+		theOpenHandleList.set_deleted_key( (HANDLE)-1 );
+		HANDLETypeName.set_empty_key(-1);
+		HANDLETypeName.set_deleted_key(-2);
+		HANDLETypeName[MSH_EMPTY] = "MSH_EMPTY";
+		HANDLETypeName[MSH_SEMAPHORE] = "MSH_SEMAPHORE";
+		HANDLETypeName[MSH_MUTEX] = "MSH_MUTEX";
+		HANDLETypeName[MSH_EVENT] = "MSH_EVENT";
+		HANDLETypeName[MSH_THREAD] = "MSH_THREAD";
+		HANDLETypeName[MSH_CLOSED] = "MSH_CLOSED";
+		theOpenHandleListReady = TRUE;
+	}
+	theOpenHandleList[h] = h->type;
+//	fprintf( stderr, "@@ Registering HANDLE 0x%p (type %d %s)\n", h, h->type, h->asString().c_str() );
+}
+
+void UnregisterHANDLE(HANDLE h)
+{
+	if( theOpenHandleListReady && theOpenHandleList.count(h) ){
+		theOpenHandleList.erase(h);
+//		fprintf( stderr, "@@ Unregistering HANDLE 0x%p (type %d %s)\n", h, h->type, h->asString().c_str() );
+	}
 }
 
 #ifndef __MINGW32__
@@ -179,8 +231,19 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 				else{
 					setitimer( ITIMER_REAL, &ortt, &rtt );
 					hHandle->d.s.owner = pthread_self();
-					if( hHandle->d.s.curCount > 0 ){
-						hHandle->d.s.curCount -= 1;
+					if( hHandle->d.s.counter->curCount > 0 ){
+						hHandle->d.s.counter->curCount -= 1;
+#ifdef linux
+						{ int cval;
+							if( sem_getvalue( hHandle->d.s.sem, &cval ) != -1 ){
+								if( cval != hHandle->d.s.counter->curCount ){
+									fprintf( stderr, "WaitForSingleObject(\"%s\"): value mismatch, %ld != %d\n",
+										   hHandle->d.s.name, hHandle->d.s.counter->curCount, cval
+									);
+								}
+							}
+						}
+#endif
 					}
 					return WAIT_OBJECT_0;
 				}
@@ -191,8 +254,19 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 				}
 				else{
 					hHandle->d.s.owner = pthread_self();
-					if( hHandle->d.s.curCount > 0 ){
-						hHandle->d.s.curCount -= 1;
+					if( hHandle->d.s.counter->curCount > 0 ){
+						hHandle->d.s.counter->curCount -= 1;
+#ifdef linux
+						{ int cval;
+							if( sem_getvalue( hHandle->d.s.sem, &cval ) != -1 ){
+								if( cval != hHandle->d.s.counter->curCount ){
+									fprintf( stderr, "WaitForSingleObject(\"%s\"): value mismatch, %ld != %d\n",
+										   hHandle->d.s.name, hHandle->d.s.counter->curCount, cval
+									);
+								}
+							}
+						}
+#endif
 					}
 					return WAIT_OBJECT_0;
 				}
@@ -334,6 +408,107 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 #ifdef linux
 #	include <dlfcn.h>
 #endif
+
+#include <vector>
+typedef std::vector<HANDLE> SemaLists;
+static SemaLists theSemaList;
+static BOOL theSemaListReady = FALSE;
+
+void FreeAllSemaHandles()
+{ long i;
+  HANDLE h;
+	while( !theSemaList.empty() ){
+		i = 0;
+		do{
+			if( (h = theSemaList.at(i)) ){
+				if( h->d.s.counter->refHANDLEp == &h->d.s.refHANDLEs && h->d.s.refHANDLEs > 0 ){
+					// a source HANDLE that is still referenced: skip for now
+//					fprintf( stderr, "Skipping referred-to semaphore %d\n", i );
+					i += 1;
+				}
+				else{
+//					fprintf( stderr, "Closing semaphore %d\n", i );
+					CloseHandle(h);
+					i = -1;
+				}
+			}
+			else{
+//				fprintf( stderr, "Removing stale semaphore %d\n", i );
+				theSemaList.erase( theSemaList.begin() + i );
+			}
+		} while( i >= 0 && i < theSemaList.size() );
+	}
+}
+
+void AddSemaListEntry(HANDLE h)
+{
+	if( !theSemaListReady ){
+//		theSemaList.set_empty_key(NULL);
+//		theSemaList.set_deleted_key( SEM_FAILED );
+		atexit(FreeAllSemaHandles);
+		theSemaListReady = TRUE;
+	}
+	if( h->type == MSH_SEMAPHORE ){
+		theSemaList.push_back(h);
+	}
+}
+
+void RemoveSemaListEntry(sem_t *sem)
+{ unsigned int i, N = theSemaList.size();
+	for( i = 0 ; i < N ; i++ ){
+		if( theSemaList.at(i)->d.s.sem == sem ){
+			theSemaList.erase( theSemaList.begin() + i );
+			return;
+		}
+	}
+}
+
+HANDLE FindSemaphoreHANDLE(sem_t *sem, char *name)
+{ unsigned int i, N = theSemaList.size();
+  HANDLE ret = NULL;
+	if( sem != SEM_FAILED || name ){
+		for( i = 0 ; i < N && !ret; i++ ){
+			if( sem != SEM_FAILED ){
+				if( theSemaList.at(i)->d.s.sem == sem ){
+					ret = theSemaList.at(i);
+				}
+			}
+			else if( name ){
+				ret = theSemaList.at(i);
+				if( strcmp( ret->d.s.name, name ) || ret->d.s.counter->refHANDLEp != &ret->d.s.refHANDLEs ){
+					// wrong name or not the source semaphore 
+					ret = NULL;
+				}
+			}
+		}
+	}
+	return ret;
+}
+
+/*!
+ Opens the named semaphore that must already exist. The ign_ arguments are ignored in this emulation
+ of the MS function of the same name.
+ */
+HANDLE OpenSemaphore( DWORD ign_dwDesiredAccess, BOOL ign_bInheritHandle, char *lpName )
+{ HANDLE org, ret = NULL;
+	if( lpName ){
+	  sem_t *sema = sem_open( lpName, 0 );
+		if( sema != SEM_FAILED ){
+			if( (org = FindSemaphoreHANDLE(SEM_FAILED, lpName))
+			   && strcmp( org->d.s.name, lpName ) == 0
+			){
+				ret = new MSHANDLE( sema, org->d.s.counter, mmstrdup(lpName) );
+			}
+		}
+	}
+	else{
+		fprintf( stderr, "OpenSemaphore(%lu,%d,NULL): call is meaningless without a semaphore name\n",
+			   ign_dwDesiredAccess, ign_bInheritHandle );
+		return NULL;
+	}
+	return ret;
+}
+
 /*!
  Creates the named semaphore with the given initial count (value). The ign_ arguments are ignored in this emulation
  of the MS function of the same name.
@@ -341,12 +516,12 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 HANDLE CreateSemaphore( void* ign_lpSemaphoreAttributes, long lInitialCount, long ign_lMaximumCount, char *lpName )
 { HANDLE ret = NULL;
 	if( lpName ){
-		lpName = strdup(lpName);
+		lpName = mmstrdup(lpName);
 	}
 	else{
-		if( (lpName = strdup( "/CSEsemXXXXXX" )) ){
+		if( (lpName = mmstrdup( (char*) "/CSEsemXXXXXX" )) ){
 #ifdef linux
-			{ char *(*fun)(char *) = (char* (*)(char*))dlsym(RTLD_DEFAULT, "mktemp");
+			{ char *(*fun)(char *) = (char* (*)(char*))dlsym(RTLD_DEFAULT, (char*) "mktemp");
 				lpName = (**fun)(lpName);
 			}
 //			{ int fd = mkstemp(lpName);
@@ -360,6 +535,7 @@ HANDLE CreateSemaphore( void* ign_lpSemaphoreAttributes, long lInitialCount, lon
 #endif
 		}
 	}
+	if( !(ret = OpenSemaphore( 0, FALSE, lpName )) ){
 	if( !(ret = (HANDLE) new MSHANDLE( ign_lpSemaphoreAttributes, lInitialCount, ign_lMaximumCount, lpName ))
 	   || ret->type != MSH_SEMAPHORE
 	){
@@ -369,31 +545,6 @@ HANDLE CreateSemaphore( void* ign_lpSemaphoreAttributes, long lInitialCount, lon
 		delete ret;
 		ret = NULL;
 	}
-	return ret;
-}
-
-/*!
- Opens the named semaphore that must already exist. The ign_ arguments are ignored in this emulation
- of the MS function of the same name.
- */
-HANDLE OpenSemaphore( DWORD ign_dwDesiredAccess, BOOL ign_bInheritHandle, char *lpName )
-{ HANDLE ret = NULL;
-	if( lpName ){
-		lpName = strdup(lpName);
-	}
-	else{
-		fprintf( stderr, "OpenSemaphore(%lu,%d,NULL): call is meaningless without a semaphore name\n",
-			ign_dwDesiredAccess, ign_bInheritHandle );
-		return NULL;
-	}
-	if( !(ret = (HANDLE) new MSHANDLE( ign_dwDesiredAccess, ign_bInheritHandle, lpName ))
-	   || ret->type != MSH_SEMAPHORE
-	){
-		fprintf( stderr, "CreateSemaphore(%lu,%d,%s) failed (%s)\n",
-			ign_dwDesiredAccess, ign_bInheritHandle, lpName, strerror(errno) );
-		free(lpName);
-		delete ret;
-		ret = NULL;
 	}
 	return ret;
 }
@@ -428,8 +579,6 @@ HANDLE CreateEvent( void *ign_lpEventAttributes, BOOL bManualReset, BOOL ign_bIn
 	}
 	return ret;
 }
-
-static pthread_key_t currentThreadKey = 0;
 
 HANDLE CreateThread( void *ign_lpThreadAttributes, size_t ign_dwStackSize, void *(*lpStartAddress)(void *),
 				void *lpParameter, DWORD dwCreationFlags, DWORD *lpThreadId )
@@ -539,7 +688,7 @@ int pthread_create_suspendable( HANDLE mshThread, const pthread_attr_t *attr,
 
 DWORD ResumeThread( HANDLE hThread )
 { DWORD prevCount = -1;
-	if( hThread && hThread->type == MSH_THREAD && hThread != GetCurrentThread() ){
+	if( hThread && hThread->type == MSH_THREAD && hThread->d.t.theThread != pthread_self() ){
 		prevCount = hThread->d.t.suspendCount;
 		if( hThread->d.t.suspendCount ){
 			if( (--hThread->d.t.suspendCount) == 0 ){
@@ -598,7 +747,7 @@ DWORD SuspendThread( HANDLE hThread )
 HANDLE GetCurrentThread()
 { HANDLE currentThread = NULL;
 	if( !currentThreadKey ){
-		cseAssertEx( pthread_key_create( &currentThreadKey, NULL ), __FILE__, __LINE__,
+		cseAssertEx( pthread_key_create( &currentThreadKey, (void (*)(void*))ForceCloseHandle ), __FILE__, __LINE__,
 				  "failure to create the currentThreadKey in GetCurrentThread()" );
 	}
 	if( !(currentThread = (HANDLE) pthread_getspecific(currentThreadKey)) || currentThread->type != MSH_THREAD ){
@@ -716,12 +865,34 @@ int GetThreadPriority(HANDLE hThread)
  Emulates the MS function of the same name:
  Closes the specified HANDLE, after closing the semaphore or mutex.
  */
-bool CloseHandle( HANDLE hObject )
+bool CloseHandle( HANDLE hObject, bool joinThread=true )
 {
-	if( hObject ){
+	if( hObject && theOpenHandleListReady && theOpenHandleList.count(hObject) ){
+		if( hObject->type == MSH_SEMAPHORE ){
+			if( hObject->d.s.counter->refHANDLEp != &hObject->d.s.refHANDLEs || hObject->d.s.refHANDLEs == 0 ){
 		delete hObject;
+			}
+		}
+		else{
+			if( hObject->type == MSH_THREAD && !joinThread ){
+				// set d.t.pThread=NULL so ~MSHANDLE won't try to join the thread before deleting the HANDLE
+				hObject->d.t.pThread = NULL;
+			}
+			delete hObject;
+		}
 		return true;
 	}
+	fprintf( stderr, "CloseHandle(0x%p) invalid HANDLE\n", hObject );
 	return false;
+}
+
+bool CloseHandle( HANDLE hObject )
+{
+	return CloseHandle( hObject, true );
+}
+
+bool ForceCloseHandle( HANDLE hObject )
+{
+	return CloseHandle( hObject, false );
 }
 #endif // MINGW32
