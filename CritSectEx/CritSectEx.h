@@ -45,7 +45,7 @@
 #	define CRITSECT	CritSectEx
 #endif
 
-#if defined(WIN32) || defined(_MSC_VER) || defined(__MINGW32__) || defined(SWIGWIN)
+#if defined(WIN32) || defined(_MSC_VER) || defined(__MINGW32__)
 #	include <windows.h>
 #	include <tchar.h>
 #	ifdef _MSC_VER
@@ -70,7 +70,7 @@
 #endif
 
 
-#if /*defined(WIN32) || */ defined(_MSC_VER) || defined(SWIGWIN)
+#if /*defined(WIN32) || */ defined(_MSC_VER)
 	__forceinline void InlDebugBreak() { __asm { int 3 }; }
 #	pragma intrinsic(_WriteBarrier)
 #	pragma intrinsic(_ReadWriteBarrier)
@@ -111,7 +111,7 @@
 	__forceinline void cseAssertEx(bool bFailed, const char *fileName, int linenr, const char *title="CritSectEx malfunction")
 	{
 		if( bFailed ){
-#	if defined(WIN32) || defined(_MSC_VER) || defined(SWIGWIN)
+#	if defined(WIN32) || defined(_MSC_VER)
 		  ULONG_PTR args[2];
 		  int confirmation;
 		  char msgBuf[1024];
@@ -204,7 +204,7 @@ static inline void _InterlockedSetFalse( volatile long *atomic )
 	}
 }
 
-#if defined(__cplusplus) && (defined(WIN32) || defined(_MSC_VER) || defined(CRITSECTGCC) || defined(SWIGGCC))
+#if defined(__cplusplus) && (defined(WIN32) || defined(_MSC_VER) || defined(CRITSECTGCC))
 class CritSectEx {
 
 	static DWORD s_dwProcessors;
@@ -251,7 +251,7 @@ class CritSectEx {
 	}
 
 	bool PerfLock(DWORD dwThreadID, DWORD dwTimeout);
-	bool PerfLockKernel(DWORD dwThreadID, DWORD dwTimeout);
+	__forceinline bool PerfLockKernel(DWORD dwThreadID, DWORD dwTimeout);
 
 	__forceinline void PerfUnlock()
 	{
@@ -417,9 +417,9 @@ public:
 
 	public:
 		__forceinline Scope()
-			:m_bLocked(false)
+			:m_pCs(NULL)
+			,m_bLocked(false)
 			,m_bUnlockFlag(false)
-			,m_pCs(NULL)
 		{
 		}
 		__forceinline Scope(CritSectEx& cs, DWORD dwTimeout = INFINITE)
@@ -427,9 +427,9 @@ public:
 			InternalLock(cs, dwTimeout);
 		}
 		__forceinline Scope(CritSectEx *cs, DWORD dwTimeout = INFINITE)
-			:m_bLocked(false)
+			:m_pCs(NULL)
+			,m_bLocked(false)
 			,m_bUnlockFlag(false)
-			,m_pCs(NULL)
 		{
 			if( cs ){
 				InternalLock(cs, dwTimeout);
@@ -580,8 +580,8 @@ public:
 
 	public:
 		__forceinline Scope()
-			:m_bLocked(false)
-			,m_pCs(NULL)
+			:m_pCs(NULL)
+			,m_bLocked(false)
 		{
 		}
 		__forceinline Scope(CritSectRec& cs, DWORD dwTimeout = INFINITE)
@@ -589,8 +589,8 @@ public:
 			InternalEnter(cs, dwTimeout);
 		}
 		__forceinline Scope(CritSectRec *cs, DWORD dwTimeout = INFINITE)
-			:m_bLocked(false)
-			,m_pCs(NULL)
+			:m_pCs(NULL)
+			,m_bLocked(false)
 		{
 			if( cs ){
 				InternalEnter(cs, dwTimeout);
@@ -646,7 +646,7 @@ public:
 };
 #endif
 
-#if defined(__cplusplus) && (defined(WIN32) || defined(_MSC_VER) || defined(SWIGGCC))
+#if defined(__cplusplus) && (defined(WIN32) || defined(_MSC_VER))
 class CritSect {
 
 	// Declare all variables volatile, so that the compiler won't
@@ -849,7 +849,7 @@ class MutexEx {
 
 	// Declare all variables volatile, so that the compiler won't
 	// try to optimise something important away.
-#if defined(WIN32) || defined(_MSC_VER) || defined(SWIGWIN)
+#if defined(WIN32) || defined(_MSC_VER)
 	volatile HANDLE	m_hMutex;
 	volatile DWORD	m_bIsLocked;
 #else
@@ -898,7 +898,7 @@ class MutexEx {
 	__forceinline void PerfUnlock()
 	{
 //		if( m_bIsLocked ){
-#if defined(WIN32) || defined(_MSC_VER) || defined(SWIGWIN)
+#if defined(WIN32) || defined(_MSC_VER)
 		ReleaseMutex(m_hMutex);
 #else
 		ReleaseSemaphore(m_hMutex, 1, NULL);
@@ -921,7 +921,7 @@ public:
 	MutexEx(DWORD dwSpinMax=0)
 	{
 		memset(this, 0, sizeof(*this));
-#if defined(WIN32) || defined(_MSC_VER) || defined(SWIGWIN)
+#if defined(WIN32) || defined(_MSC_VER)
 		m_hMutex = CreateMutex( NULL, FALSE, NULL );
 #else
 		m_hMutex = CreateSemaphore( NULL, 1, -1, NULL );
@@ -1011,9 +1011,9 @@ public:
 
 	public:
 		__forceinline Scope()
-			:m_bLocked(false)
+			:m_pCs(NULL)
+			,m_bLocked(false)
 			,m_bUnlockFlag(false)
-			,m_pCs(NULL)
 		{
 		}
 		__forceinline Scope(MutexEx& cs, DWORD dwTimeout = INFINITE)
@@ -1021,9 +1021,9 @@ public:
 			InternalLock(cs, dwTimeout);
 		}
 		__forceinline Scope(MutexEx *cs, DWORD dwTimeout = INFINITE)
-			:m_bLocked(false)
+			:m_pCs(NULL)
+			,m_bLocked(false)
 			,m_bUnlockFlag(false)
-			,m_pCs(NULL)
 		{
 			if( cs ){
 				InternalLock(cs, dwTimeout);

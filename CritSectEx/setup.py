@@ -17,7 +17,7 @@ def doall():
 		 ext_modules = [Extension('_CritSectEx',
 							 sources=['CritSectEx_wrap.c','CritSectEx.cpp','msemul.cpp','timing.c'],
 							 depends=['CritSectEx.h','msemul.h','timing.h'],
-							 extra_compile_args=['-g'],
+							 extra_compile_args=['-g','-I/usr/local/include'],
 							 extra_link_args=extra_link_args
 							 )])
 
@@ -30,7 +30,7 @@ def doall():
 		 ext_modules = [Extension('_MSEmul',
 							 sources=['msemul_wrap.cxx','msemul.cpp','timing.c'],
 							 depends=['msemul.h','timing.h'],
-							 extra_compile_args=['-g'],
+							 extra_compile_args=['-g','-I/usr/local/include'],
 							 extra_link_args=extra_link_args
 							 )])
 

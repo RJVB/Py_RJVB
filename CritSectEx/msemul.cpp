@@ -25,6 +25,92 @@ static void cseUnsleep( int sig )
 //	fprintf( stderr, "SIGALRM\n" );
 }
 
+#include <google/dense_hash_map>
+#include <sys/mman.h>
+int mseShFD = -1;
+#define MSESHAREDMEMNAME	"/dev/zero"; //"MSEShMem-XXXXXX"
+char MSESharedMemName[64] = "";
+static size_t mmapCount = 0;
+static BOOL theMSEShMemListReady = FALSE;
+
+typedef google::dense_hash_map<void*,size_t> MSEShMemLists;
+static MSEShMemLists theMSEShMemList;
+
+void MSEfreeShared(void *ptr)
+{ static short calls = 0;
+	if( ptr && theMSEShMemList.count(ptr) ){
+		size_t N = theMSEShMemList[ptr];
+		if( munmap( ptr, N ) == 0 ){
+			theMSEShMemList[ptr] = 0;
+			theMSEShMemList.erase(ptr);
+			if( ++calls >= 32 ){
+				theMSEShMemList.resize(0);
+				calls = 0;
+			}
+			mmapCount -= 1;
+		}
+		ptr = NULL;
+	}
+	if( mmapCount == 0 ){
+		if( mseShFD >= 0 ){
+			close(mseShFD);
+			if( strcmp( MSESharedMemName, "/dev/zero" ) ){
+				shm_unlink(MSESharedMemName);
+			}
+		}
+	}
+}
+
+void MSEfreeAllShared()
+{ 
+	while( theMSEShMemList.size() > 0 ){
+	  MSEShMemLists::iterator i = theMSEShMemList.begin();
+	  std::pair<void*,size_t> elem = *i;
+//		fprintf( stderr, "MSEfreeShared(0x%p) of %lu remaining elements\n", elem.first, theMSEShMemList.size() );
+		MSEfreeShared(elem.first);
+	}
+}
+
+void *MSEreallocShared( void* ptr, size_t N, size_t oldN )
+{ void *mem;
+	int flags = MAP_SHARED;
+#ifndef MAP_ANON
+	if( mseShFD < 0 ){
+		if( !MSESharedMemName[0] ){
+			strcpy( MSESharedMemName, MSESHAREDMEMNAME );
+// 			mktemp(MSESharedMemName);
+		}
+ 		if( (mseShFD = open( MSESharedMemName, O_RDWR )) < 0 ){
+//			fprintf( stderr, "MSEreallocShared(): can't open/create descriptor for allocating %s=0x%lx, size %s=%lu -> 0x%lx (%s)\n",
+//				   (name)? name : "<unknown>", ptr, size, (unsigned long) N, mem, serror()
+//			);
+			return NULL;
+		}
+	}
+#else
+	flags |= MAP_ANON;
+#endif
+	mem = mmap( NULL, N, (PROT_READ|PROT_WRITE), flags, mseShFD, 0 );
+	if( mem ){
+		memset( mem, 0, N );
+		mmapCount += 1;
+		if( !theMSEShMemListReady ){
+			theMSEShMemList.set_empty_key(NULL);
+			theMSEShMemList.set_deleted_key( (void*)-1 );
+			atexit(MSEfreeAllShared);
+			theMSEShMemListReady = TRUE;
+		}
+		theMSEShMemList[mem] = N;
+		if( ptr ){
+			memmove( mem, ptr, N );
+			if( munmap( ptr, oldN ) == 0 ){
+				mmapCount -= 1;
+			}
+		}
+	}
+	return( mem );
+}
+
 #ifndef __MINGW32__
 /*!
  Emulates the Microsoft function of the same name:
@@ -93,6 +179,9 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 				else{
 					setitimer( ITIMER_REAL, &ortt, &rtt );
 					hHandle->d.s.owner = pthread_self();
+					if( hHandle->d.s.curCount > 0 ){
+						hHandle->d.s.curCount -= 1;
+					}
 					return WAIT_OBJECT_0;
 				}
 #else
@@ -102,6 +191,9 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 				}
 				else{
 					hHandle->d.s.owner = pthread_self();
+					if( hHandle->d.s.curCount > 0 ){
+						hHandle->d.s.curCount -= 1;
+					}
 					return WAIT_OBJECT_0;
 				}
 #endif
@@ -208,11 +300,9 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 			// get the mutex and then wait for the condition to be signalled:
 			if( pthread_mutex_lock( hHandle->d.e.mutex ) == 0 ){
 				hHandle->d.e.waiter = pthread_self();
-					fprintf( stderr, "### %lu waiting on condition %lu... ", hHandle->d.e.waiter, hHandle->d.e.cond ); fflush(stderr);
 				if( pthread_cond_wait( hHandle->d.e.cond, hHandle->d.e.mutex ) ){
 					pthread_mutex_unlock( hHandle->d.e.mutex );
 					hHandle->d.e.waiter = 0;
-					fprintf( stderr, "abandoned\n" ); fflush(stderr);
 					return WAIT_ABANDONED;
 				}
 				else{
@@ -221,7 +311,6 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 					if( !hHandle->d.e.isManual ){
 						_InterlockedSetFalse(hHandle->d.e.isSignalled);
 					}
-					fprintf( stderr, "success, signalled=%d\n", hHandle->d.e.isSignalled ); fflush(stderr);
 					return WAIT_OBJECT_0;
 				}
 			}
@@ -242,6 +331,9 @@ DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 	return WAIT_ABANDONED;
 }
 
+#ifdef linux
+#	include <dlfcn.h>
+#endif
 /*!
  Creates the named semaphore with the given initial count (value). The ign_ arguments are ignored in this emulation
  of the MS function of the same name.
@@ -253,7 +345,19 @@ HANDLE CreateSemaphore( void* ign_lpSemaphoreAttributes, long lInitialCount, lon
 	}
 	else{
 		if( (lpName = strdup( "/CSEsemXXXXXX" )) ){
+#ifdef linux
+			{ char *(*fun)(char *) = (char* (*)(char*))dlsym(RTLD_DEFAULT, "mktemp");
+				lpName = (**fun)(lpName);
+			}
+//			{ int fd = mkstemp(lpName);
+//				if( fd >= 0 ){
+//					close(fd);
+//					unlink(lpName);
+//				}
+//			}
+#else
 			lpName = mktemp(lpName);
+#endif
 		}
 	}
 	if( !(ret = (HANDLE) new MSHANDLE( ign_lpSemaphoreAttributes, lInitialCount, ign_lMaximumCount, lpName ))
@@ -261,6 +365,32 @@ HANDLE CreateSemaphore( void* ign_lpSemaphoreAttributes, long lInitialCount, lon
 	){
 		fprintf( stderr, "CreateSemaphore(%p,%ld,%ld,%s) failed (%s)\n",
 			ign_lpSemaphoreAttributes, lInitialCount, ign_lMaximumCount, lpName, strerror(errno) );
+		free(lpName);
+		delete ret;
+		ret = NULL;
+	}
+	return ret;
+}
+
+/*!
+ Opens the named semaphore that must already exist. The ign_ arguments are ignored in this emulation
+ of the MS function of the same name.
+ */
+HANDLE OpenSemaphore( DWORD ign_dwDesiredAccess, BOOL ign_bInheritHandle, char *lpName )
+{ HANDLE ret = NULL;
+	if( lpName ){
+		lpName = strdup(lpName);
+	}
+	else{
+		fprintf( stderr, "OpenSemaphore(%lu,%d,NULL): call is meaningless without a semaphore name\n",
+			ign_dwDesiredAccess, ign_bInheritHandle );
+		return NULL;
+	}
+	if( !(ret = (HANDLE) new MSHANDLE( ign_dwDesiredAccess, ign_bInheritHandle, lpName ))
+	   || ret->type != MSH_SEMAPHORE
+	){
+		fprintf( stderr, "CreateSemaphore(%lu,%d,%s) failed (%s)\n",
+			ign_dwDesiredAccess, ign_bInheritHandle, lpName, strerror(errno) );
 		free(lpName);
 		delete ret;
 		ret = NULL;
@@ -325,9 +455,16 @@ struct TFunParams {
 	HANDLE mshThread;
 	void *(*start_routine)(void *);
 	void *arg;
+	TFunParams(HANDLE h, void *(*threadFun)(void*), void *args)
+	{
+		mshThread = h;
+		start_routine = threadFun;
+		arg = args;
+	}
 };
 
 static pthread_key_t suspendKey = 0;
+static BOOL suspendKeyCreated = false;
 
 /*!
 	specific USR2 signal handler that will attempt to suspend the current thread by
@@ -359,8 +496,11 @@ static void pthread_u2_handler(int sig)
 
 static void *ThreadFunStart(void *params)
 { struct TFunParams *tp = (struct TFunParams*) params;
+  void *(*threadFun)(void*) = tp->start_routine;
+  void *args = tp->arg;
 	pthread_setspecific( suspendKey, tp->mshThread );
-	return (*tp->start_routine)( tp->arg );
+	delete tp;
+	return (*threadFun)(args);
 }
 
 /*!
@@ -374,21 +514,21 @@ static void *ThreadFunStart(void *params)
  */
 int pthread_create_suspendable( HANDLE mshThread, const pthread_attr_t *attr,
 						  void *(*start_routine)(void *), void *arg, bool suspended )
-{ struct TFunParams params;
-  int ret;
-	if( !suspendKey ){
+{ int ret;
+	if( !suspendKeyCreated ){
 		cseAssertEx( pthread_key_create( &suspendKey, NULL ), __FILE__, __LINE__,
 				  "failure to create the thread suspend key in pthread_create_suspendable()" );
+		suspendKeyCreated = true;
 	}
-	params.mshThread = mshThread;
-	params.start_routine = start_routine;
-	params.arg = arg;
+
+	struct TFunParams *params = new TFunParams( mshThread, start_routine, arg );
+
 	mshThread->d.t.pThread = &mshThread->d.t.theThread;
 	mshThread->type = MSH_THREAD;
 	// it doesn't seem to work to install the signal handler from the background thread. Since
 	// it's process-wide anyway we can just as well do it here.
 	signal( SIGUSR2, pthread_u2_handler );
-	ret = pthread_create( &mshThread->d.t.theThread, attr, ThreadFunStart, &params );
+	ret = pthread_create( &mshThread->d.t.theThread, attr, ThreadFunStart, params );
 	if( ret == 0 && suspended ){
 		SuspendThread(mshThread);
 	}
