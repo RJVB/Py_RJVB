@@ -41,7 +41,7 @@ def doall():
 		 description = 'a package providing a sincos function',
 		 ext_modules = [Extension('sincos',
 							 sources=['sincos.c','mips_sincos.c','cephes_sincos.c'],
-							 depends=['sse_mathfun.h'],
+							 depends=['sse_mathfun/sse_mathfun.h'],
 							 include_dirs = [numpy_get_include()],
 							 extra_compile_args =['-g','-msse2','-faltivec']
 							 )])

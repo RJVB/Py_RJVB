@@ -73,7 +73,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #		include <xmmintrin.h>
 #		include <emmintrin.h>
 #		define SSE_MATHFUN_WITH_CODE
-#		include "sse_mathfun.h"
+#		include "sse_mathfun/sse_mathfun.h"
 
 		void sincos_sse(double x, double *s, double *c )
 		{ v4sf xx, ss, cc;
@@ -95,7 +95,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #			include <xmmintrin.h>
 #			include <emmintrin.h>
 #			define SSE_MATHFUN_WITH_CODE
-#			include "sse_mathfun.h"
+#			include "sse_mathfun/sse_mathfun.h"
 
 			void sincos_sse(double x, double *s, double *c )
 			{ v4sf xx, ss, cc;

@@ -11,6 +11,7 @@
    not expect any significant performance improvement with SSE2.
 */
 
+/* Copyright (C) 2010,2011  RJVB - extensions */
 /* Copyright (C) 2007  Julien Pommier
 
   This software is provided 'as-is', without any express or implied
@@ -36,13 +37,22 @@
 
 #ifdef USE_SSE_AUTO
 #	ifdef __SSE2__
+#		if defined(__GNUC__)
+#			warning "USE_SSE2"
+#		endif
 #		define USE_SSE2
 #	endif
 #	if defined(__SSE3__) || defined(__SSSE3__)
+#		if defined(__GNUC__)
+#			warning "USE_SSE3"
+#		endif
 #		define USE_SSE2
 #		define USE_SSE3
 #	endif
 #	if defined(__SSE4__) || defined(__SSE4_1__) || defined(__SSE4_2__) || (_M_IX86_FP > 1)
+#		if defined(__GNUC__)
+#			warning "USE_SSE4"
+#		endif
 #		define USE_SSE2
 #		define USE_SSE3
 #		define USE_SSE4
@@ -99,8 +109,8 @@ typedef __m64 v2si;   // vector of 2 int (mmx)
 #	define USE_SSE3
 #	include <pmmintrin.h>
 #	if defined(__SSSE3__) || (_M_IX86_FP > 1)
-#	include <tmmintrin.h>
-#endif
+#		include <tmmintrin.h>
+#	endif
 #endif
 
 #if defined(USE_SSE4)
@@ -1329,11 +1339,13 @@ static inline double scalCumSumSumSq( double *xa, int n, double *sumSQ )
 	static inline double _mm_abs_sd( double a )
 	{ const static unsigned long long am2 = 0x7fffffffffffffffLL;
 	  const v4si am1 = _mm_set_epi32(0x7fffffff,0xffffffff,0x7fffffff,0xffffffff);
-	  union { double d; v2si r; } ret;
-		ret.r = _mm_and_si64( *((v2si*)&a), *((v2si*)&am1) );
+	  v2si r = _mm_and_si64( *((v2si*)&a), *((v2si*)&am1) );
 		_mm_empty();
-		a = ret.d;
-		return a;
+		return *((double*)&r);
+//	  union { double d; v2si r; } ret;
+//		ret.r = _mm_and_si64( *((v2si*)&a), *((v2si*)&am1) );
+//		a = ret.d;
+//		return a;
 	}
 #	endif // i386 or x86_64
  	static inline v4sf _mm_abs_ps( register v4sf a )
