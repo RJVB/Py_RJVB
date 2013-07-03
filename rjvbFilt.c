@@ -148,6 +148,11 @@ static PyObject *python_SavGolayCoeffs( PyObject *self, PyObject *args, PyObject
 	  npy_intp dim[1]= {N};
 		if( !(fw== 0 && fo== 0 && deriv==0) ){
 			if( savgol( &(coeffs)[-1], N, fw, fw, deriv, fo ) ){
+					fprintf( StdErr, "coeffs[%lu,%d,%d,%d]={%g", N, fw, deriv, fo, coeffs[0] );
+					for( i = 1; i < N; i++ ){
+						fprintf( StdErr, ",%g", coeffs[i] );
+					}
+					fputs( "}\n", StdErr );
 				  /* Unwrap the coefficients into the target memory:	*/
 				output[N/2] = coeffs[0];
 				for( i = 1; i <= N/2; i++ ){
@@ -185,6 +190,54 @@ static PyObject *python_SavGolayGain( PyObject *self, PyObject *args, PyObject *
 	}
 // 	return( Py_BuildValue("d", ((deriv>0)? pow(delta,deriv)/deriv : 1) ) );
 	return( Py_BuildValue("d", ((deriv>0)? deriv/pow(delta,deriv) : 1) ) );
+}
+
+static PyObject *python_SavGolay2DCoeffs( PyObject *self, PyObject *args, PyObject *kw )
+{ PyObject *ret = NULL;
+  int fw, fo, deriv = 0;
+  char *kws[] = { "halfwidth", "order", "deriv", NULL };
+  unsigned long N;
+  double *output;
+	
+	if(!PyArg_ParseTupleAndKeywords(args, kw, "ii|i:SavGolay2DCoeffs", kws, &fw, &fo, &deriv )){
+		return NULL;
+	}
+	if( fw < 0 || fw > (MAXINT-1)/2 ){
+		PyErr_Warn( FMError, "halfwidth must be positive and <= (MAXINT-1)/2; clipping" );
+		CLIP( fw, 0, (MAXINT-1)/2 );
+	}
+	if( fo < 0 || fo > 2*fw ){
+		PyErr_Warn( FMError, "order must be positive and <= the filter width" );
+		  /* Put arbitrary upper limit on the order of the smoothing polynomial	*/
+		CLIP( fo, 0, 2* fw );
+	}
+	if( deriv < -fo || deriv > fo ){
+		PyErr_Warn( FMError, "derivative must be between -order and +order" );
+		CLIP( deriv, -fo, fo );
+	}
+	N = savgol2D_dim( fw, NULL );
+	errno = 0;
+	if( (output= (double*) PyMem_New(double, (N*N+ 1) )) ){
+	  int i;
+	  npy_intp dim[2]= {N, N};
+		if( !(fw== 0 && fo== 0 && deriv==0) ){
+			if( !savgol2D( output, N*N, fw, deriv, fo ) ){
+				PyMem_Free(output);
+				output = NULL;
+			}
+		}
+		else{
+			memset( output, 0, N * N * sizeof(double) );
+		}
+		if( output ){
+			ret = PyArray_SimpleNewFromData( 2, dim, PyArray_DOUBLE, (void*) output );
+			((PyArrayObject*)ret)->flags|= NPY_OWNDATA;
+		}
+	}
+	else{
+		PyErr_NoMemory();
+	}
+	return( ret );
 }
 
 static PyObject *__python_Spline_Resample(int use_PWLInt, PyObject *OrgX, PyObject *OrgY, PyObject *ResampledX,
@@ -425,6 +478,15 @@ static PyMethodDef Filt_methods[] =
 		"SavGolayGain(delta,deriv): returns the gain factor by which the result of a convolution\n"
 		" with a SavGolay mask has to be multiplied (1 for deriv==0). delta is the resolution of\n"
 		" the dimension with respect to which the derivative is being taken, e.g. the sampling time interval.\n"
+	},
+	{ "SavGolay2DCoeffs", (PyCFunction) python_SavGolay2DCoeffs, METH_VARARGS|METH_KEYWORDS,
+		"SavGolay2DCoeffs(halfwidth,order[,deriv=0]]): determine the coefficients\n"
+		" for a 2D Savitzky-Golay convolution filter. This returns a mask that can be used for\n"
+		" convolution; the wider the filter, the more it smooths using a polynomial of the\n"
+		" requested order (the higher the orde, the closer it will follow the input data). The\n"
+		" deriv argument specifies an optional derivative that will be calculated during\n"
+		" the smoothing; this is generally better than smoothing first and taking the derivative afterwards.\n"
+		" After the convolution, the output is scaled by a gain factor; see SavGolayGain.\n"
 	},
 	{ "Spline_Resample", (PyCFunction) python_Spline_Resample, METH_VARARGS|METH_KEYWORDS,
 		docSplineResample

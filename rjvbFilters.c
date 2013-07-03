@@ -622,6 +622,99 @@ int savgol(savgol_flp *c, int np, int nl, int nr, int ld, int m)
 	return(1);
 }
 
+unsigned long savgol2D_dim( int fw, unsigned long *diag )
+{ unsigned long N, d;
+	// the "standard size" of the 1D kernel corresponding to an <fw> halfwidth;
+	// the 2D kernel will be an N*N square
+	N = fw * 2 + 3;
+	// the diagonal of an fw*fw square (this is the size of the actual kernel we'll need to calculate)
+	if( diag ){
+		d = (unsigned long) (sqrt( 2.0 * fw * fw ) + 0.5);
+		*diag = d * 2 + 3;
+	}
+	return N;
+}
+
+#define COEFF2D(c,i,j)	(c)[(i)+N1d*(j)]
+
+int savgol2D( savgol_flp *c, unsigned long N, int fw, int deriv, int fo )
+{ unsigned long N1d, N1d_2, diagN, i, j, k;
+  savgol_flp *coeffs;
+
+	if( fw < 0 || fw > (MAXINT-1)/2 ){
+		return 0;
+	}
+	if( fo < 0 || fo > 2*fw ){
+		return 0;
+	}
+	if( deriv < -fo || deriv > fo ){
+		return 0;
+	}
+	N1d = savgol2D_dim( fw, &diagN );
+	if( N != N1d * N1d ){
+		return 0;
+	}
+	errno = 0;
+	if( (coeffs = (savgol_flp*) malloc( (diagN+1) * sizeof(savgol_flp) )) ){
+		if( !(fw== 0 && fo== 0 && deriv==0) ){
+			if( savgol( &(coeffs)[-1], diagN, fw, fw, deriv, fo ) ){
+					fprintf( StdErr, "coeffs[%lu,%d,%d,%d]={%g", diagN, fw, deriv, fo, coeffs[0] );
+					for( i = 1; i < diagN; i++ ){
+						fprintf( StdErr, ",%g", coeffs[i] );
+					}
+					fputs( "}\n", StdErr );
+//					// testing:
+//					coeffs[0] = 0;
+//					for( i = 1; i <= diagN; i++ ){
+//						coeffs[i] = i;
+//					}
+//					fprintf( StdErr, "coeffs={%g", coeffs[0] );
+//					for( i = 1; i < diagN; i++ ){
+//						fprintf( StdErr, ",%g", coeffs[i] );
+//					}
+//					fputs( "}\n", StdErr );
+//				for( j = 0 ; j < N ; j++ ){
+//					c[j] = 0.0/0.0;
+//				}
+				i = j = N1d_2 = N1d/2;
+				for( j = 0 ; j <= N1d_2 ; j++ ){
+//						i = 0;
+//						fprintf( StdErr, "%lu:%lu|", j, i );
+					for( i = 0; i <= N1d_2; i++ ){
+					  long aa = N1d_2 - i, bb = N1d_2 - j,
+						cc = N1d_2 + i, dd = N1d_2 + j;
+						k = (unsigned long) (sqrt(i*i + j*j) + 0.5);
+//							fprintf( StdErr, " [%ld,%ld],%lu", i, j, k );
+						if( k <= diagN ){
+							COEFF2D(c, aa, dd) = coeffs[k];
+							COEFF2D(c, cc, bb) = coeffs[diagN-k];
+							if( aa != N1d_2 && bb != N1d_2 && cc != N1d_2 && dd != N1d_2 ){
+								COEFF2D(c, aa, bb) = coeffs[diagN-k];
+								COEFF2D(c, cc, dd) = coeffs[k];
+							}
+						}
+						else{
+							COEFF2D(c, aa, dd) = 0;
+							COEFF2D(c, cc, bb) = 0;
+							COEFF2D(c, aa, bb) = 0;
+							COEFF2D(c, cc, dd) = 0;
+							if( aa != N1d_2 && bb != N1d_2 && cc != N1d_2 && dd != N1d_2 ){
+								COEFF2D(c, aa, bb) = 0;
+								COEFF2D(c, cc, dd) = 0;
+							}
+						}
+					}
+//						fprintf( StdErr, " |%lu:%lu\n", j, i-1 );
+				}
+				COEFF2D(c,N1d_2,N1d_2) = coeffs[0];
+				free(coeffs);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

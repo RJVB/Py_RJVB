@@ -1,0 +1,229 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		D65BE81C17833DAF00DC79D2 /* setup_cygwin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup_cygwin.py; sourceTree = "<group>"; };
+		D65BE81D17833DAF00DC79D2 /* setup_linuxX86.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup_linuxX86.py; sourceTree = "<group>"; };
+		D65BE81E17833DAF00DC79D2 /* setup_msvc.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup_msvc.py; sourceTree = "<group>"; };
+		D65BE81F17833DAF00DC79D2 /* setup-macstl.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "setup-macstl.py"; sourceTree = "<group>"; };
+		D65BE82017833DAF00DC79D2 /* setup-vecLib.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "setup-vecLib.py"; sourceTree = "<group>"; };
+		D65BE82117833DAF00DC79D2 /* setup.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
+		D65BE82317833DE000DC79D2 /* HRTime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HRTime.c; sourceTree = "<group>"; };
+		D65BE82417833DE000DC79D2 /* HRTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRTime.h; sourceTree = "<group>"; };
+		D65BE82517833DF900DC79D2 /* rtsched.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rtsched.c; path = rtsched/rtsched.c; sourceTree = "<group>"; };
+		D65BE82617833E1D00DC79D2 /* rebin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = rebin.py; sourceTree = "<group>"; };
+		D65BE82717833E2500DC79D2 /* DataFrame.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = DataFrame.py; sourceTree = "<group>"; };
+		D65BE82817833E4600DC79D2 /* cephes_sincos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cephes_sincos.c; sourceTree = "<group>"; };
+		D65BE82917833E4600DC79D2 /* mips_sincos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mips_sincos.c; sourceTree = "<group>"; };
+		D65BE82A17833E4600DC79D2 /* sincos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sincos.c; sourceTree = "<group>"; };
+		D65BE82B17833E6A00DC79D2 /* ParsedSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParsedSequence.h; sourceTree = "<group>"; };
+		D65BE82C17833E6A00DC79D2 /* rjvbFilt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rjvbFilt.c; sourceTree = "<group>"; };
+		D65BE82D17833E6A00DC79D2 /* rjvbFilters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rjvbFilters.c; sourceTree = "<group>"; };
+		D65BE82E17833E6A00DC79D2 /* rjvbFilters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rjvbFilters.cpp; sourceTree = "<group>"; };
+		D65BE82F17833E6A00DC79D2 /* rjvbFilters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rjvbFilters.h; sourceTree = "<group>"; };
+		D65BE83017833E7B00DC79D2 /* fmadd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmadd.c; sourceTree = "<group>"; };
+		D65BE83117833E7B00DC79D2 /* fmadd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fmadd.cpp; sourceTree = "<group>"; };
+		D65BE83A17833EC700DC79D2 /* sse_mathfun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sse_mathfun.h; path = sse_mathfun/sse_mathfun.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* Py_RJVB */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE83217833E8700DC79D2 /* HRTime */,
+				D65BE82517833DF900DC79D2 /* rtsched.c */,
+				D65BE83317833E9100DC79D2 /* python code */,
+				D65BE83417833E9C00DC79D2 /* sincos */,
+				D65BE83517833EA200DC79D2 /* rjvbFilt */,
+				D65BE83617833EAE00DC79D2 /* fmadd */,
+				D65BE81817833D8500DC79D2 /* build scripts */,
+			);
+			name = Py_RJVB;
+			sourceTree = "<group>";
+		};
+		D65BE81817833D8500DC79D2 /* build scripts */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE81C17833DAF00DC79D2 /* setup_cygwin.py */,
+				D65BE81D17833DAF00DC79D2 /* setup_linuxX86.py */,
+				D65BE81E17833DAF00DC79D2 /* setup_msvc.py */,
+				D65BE81F17833DAF00DC79D2 /* setup-macstl.py */,
+				D65BE82017833DAF00DC79D2 /* setup-vecLib.py */,
+				D65BE82117833DAF00DC79D2 /* setup.py */,
+			);
+			name = "build scripts";
+			sourceTree = "<group>";
+		};
+		D65BE83217833E8700DC79D2 /* HRTime */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE82317833DE000DC79D2 /* HRTime.c */,
+				D65BE82417833DE000DC79D2 /* HRTime.h */,
+			);
+			name = HRTime;
+			sourceTree = "<group>";
+		};
+		D65BE83317833E9100DC79D2 /* python code */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE82617833E1D00DC79D2 /* rebin.py */,
+				D65BE82717833E2500DC79D2 /* DataFrame.py */,
+			);
+			name = "python code";
+			sourceTree = "<group>";
+		};
+		D65BE83417833E9C00DC79D2 /* sincos */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE83A17833EC700DC79D2 /* sse_mathfun.h */,
+				D65BE82817833E4600DC79D2 /* cephes_sincos.c */,
+				D65BE82917833E4600DC79D2 /* mips_sincos.c */,
+				D65BE82A17833E4600DC79D2 /* sincos.c */,
+			);
+			name = sincos;
+			sourceTree = "<group>";
+		};
+		D65BE83517833EA200DC79D2 /* rjvbFilt */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE82B17833E6A00DC79D2 /* ParsedSequence.h */,
+				D65BE82C17833E6A00DC79D2 /* rjvbFilt.c */,
+				D65BE82D17833E6A00DC79D2 /* rjvbFilters.c */,
+				D65BE82E17833E6A00DC79D2 /* rjvbFilters.cpp */,
+				D65BE82F17833E6A00DC79D2 /* rjvbFilters.h */,
+			);
+			name = rjvbFilt;
+			sourceTree = "<group>";
+		};
+		D65BE83617833EAE00DC79D2 /* fmadd */ = {
+			isa = PBXGroup;
+			children = (
+				D65BE83017833E7B00DC79D2 /* fmadd.c */,
+				D65BE83117833E7B00DC79D2 /* fmadd.cpp */,
+			);
+			name = fmadd;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		D28A88AD04BDD90700651E21 /* Py_RJVB-py27 */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "setup-vecLib.py build $ACTION";
+			buildConfigurationList = 1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "Py_RJVB-py27" */;
+			buildPhases = (
+			);
+			buildToolPath = python2.7;
+			dependencies = (
+			);
+			name = "Py_RJVB-py27";
+			passBuildSettingsInEnvironment = 1;
+			productName = Py_RJVB;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+			};
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "Py_RJVB" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Py_RJVB */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D28A88AD04BDD90700651E21 /* Py_RJVB-py27 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB919008733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = Py_RJVB;
+			};
+			name = Debug;
+		};
+		1DEB919108733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "Py_RJVB-py27";
+			};
+			name = Release;
+		};
+		1DEB919408733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB919508733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "Py_RJVB-py27" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919008733D9F0010E9CD /* Debug */,
+				1DEB919108733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "Py_RJVB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debug */,
+				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

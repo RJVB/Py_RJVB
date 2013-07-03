@@ -9,6 +9,8 @@ extern "C" {
 
 #	define savgol_flp	double
 	extern int savgol(savgol_flp *c, int np, int nl, int nr, int ld, int m);
+	extern unsigned long savgol2D_dim( int fw, unsigned long *diag );
+	extern int savgol2D( savgol_flp *c, unsigned long N, int fw, int deriv, int fo );
 
 #	ifndef xfree
 #		define xfree(x)	if((x)){ free((x)); (x)=NULL; }
