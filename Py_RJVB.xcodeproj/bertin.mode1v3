@@ -221,6 +221,46 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>D64B7A57178CBFDD00BE0684</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>savitzky_golay_filter2d.m</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>D64B7A58178CBFDD00BE0684</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>savitzky_golay_filter2d.m</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>D64B7A5B178CBFDD00BE0684</string>
+						<key>history</key>
+						<array>
+							<string>D64B7A59178CBFDD00BE0684</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {755, 717}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>640 81 755 758 0 0 1440 878 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>D65BE83F17833FBC00DC79D2</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>rjvbFilters.c</string>
@@ -235,10 +275,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>D6F12F8A17848E0000B9E7F3</string>
+						<string>D64B7A5C178CBFDD00BE0684</string>
 						<key>history</key>
 						<array>
-							<string>D65BE91317847B1F00DC79D2</string>
+							<string>D6D902591784DDA400CD6350</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -275,10 +315,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>D6F12F8B17848E0000B9E7F3</string>
+						<string>D64B7A5D178CBFDD00BE0684</string>
 						<key>history</key>
 						<array>
-							<string>D65BE91417847B1F00DC79D2</string>
+							<string>D6D9025A1784DDA400CD6350</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -315,10 +355,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>D6F12F8C17848E0000B9E7F3</string>
+						<string>D64B7A5E178CBFDD00BE0684</string>
 						<key>history</key>
 						<array>
-							<string>D65BE91517847B1F00DC79D2</string>
+							<string>D6D9025B1784DDA400CD6350</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -355,10 +395,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>D6F12F8D17848E0000B9E7F3</string>
+						<string>D64B7A5F178CBFDD00BE0684</string>
 						<key>history</key>
 						<array>
-							<string>D65BE91717847B1F00DC79D2</string>
+							<string>D6D9025C1784DDA400CD6350</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -410,8 +450,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -455,8 +493,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>20</integer>
-									<integer>19</integer>
+									<integer>11</integer>
+									<integer>5</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -560,9 +599,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>D6F12F3B17847C1900B9E7F3</string>
+				<string>D64B7A55178CBFDD00BE0684</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>D6F12F3C17847C1900B9E7F3</string>
+				<string>D64B7A56178CBFDD00BE0684</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -683,7 +722,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>394563072.40128303</real>
+	<real>395100125.98285699</real>
 	<key>ToolbarConfigUserDefaultsMinorVersion</key>
 	<string>2</string>
 	<key>ToolbarDisplayMode</key>
@@ -702,10 +741,11 @@
 	<array>
 		<string>D65BE80D17833CEB00DC79D2</string>
 		<string>D65BE855178346A800DC79D2</string>
-		<string>/Volumes/Debian/Users/bertin/work/src/python/Py_RJVB/Py_RJVB.xcodeproj</string>
 		<string>D65BE8831783828E00DC79D2</string>
 		<string>D65BE84617833FBC00DC79D2</string>
 		<string>D65BE83F17833FBC00DC79D2</string>
+		<string>/Volumes/Debian/Users/bertin/work/src/python/Py_RJVB/Py_RJVB.xcodeproj</string>
+		<string>D64B7A57178CBFDD00BE0684</string>
 	</array>
 	<key>WindowString</key>
 	<string>-840 167 788 504 -1280 100 1280 800 </string>
@@ -785,7 +825,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>D65BE80D17833CEB00DC79D2</string>
-				<string>D6F12F4117847C1900B9E7F3</string>
+				<string>D64B7A60178CBFDD00BE0684</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -981,8 +1021,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>D65BE889178383EB00DC79D2</string>
-				<string>D65BE88A178383EB00DC79D2</string>
+				<string>D6D902531784DD9500CD6350</string>
+				<string>D6D902541784DD9500CD6350</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

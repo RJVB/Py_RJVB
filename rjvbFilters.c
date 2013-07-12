@@ -156,10 +156,10 @@ unsigned long fourconv3_nan_handling( double *data, size_t NN, int nan_handling 
 						  /* 20050108: must pad from sL and not from sL+1 ! */
 #ifdef DEBUG
 						fprintf( StdErr, "'left' NaN hole from %lu-%lu; padding with %g (%d)\n", sL+0, eL-1, data[eL], __LINE__ );
-						fprintf( StdErr, "\td[%d]=%s d[%d]=%s d[%d]=%s d[%d]=%s\n",
-							sL, ad2str(data[sL],NULL,NULL), sL+1, ad2str(data[sL+1],NULL,NULL),
-							eL-1, ad2str(data[eL-1],NULL,NULL),
-							eL, ad2str(data[eL],NULL,NULL), eL+1, ad2str(data[eL+1],NULL,NULL)
+						fprintf( StdErr, "\td[%d]=%g d[%d]=%g d[%d]=%g d[%d]=%g\n",
+							sL, data[sL], sL+1, data[sL+1],
+							eL-1, data[eL-1],
+							eL, data[eL], eL+1, data[eL+1]
 						);
 #endif
 						if( sL==0 && eL==1 ){
@@ -714,6 +714,8 @@ int savgol2D( savgol_flp *c, unsigned long N, int fw, int deriv, int fo )
 	}
 	return 0;
 }
+
+
 
 #ifdef __cplusplus
 }

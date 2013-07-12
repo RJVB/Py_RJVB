@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		D64B7A54178CBFB200BE0684 /* savitzky_golay_filter2d.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.matlab; fileEncoding = 4; path = savitzky_golay_filter2d.m; sourceTree = "<group>"; };
 		D65BE81C17833DAF00DC79D2 /* setup_cygwin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup_cygwin.py; sourceTree = "<group>"; };
 		D65BE81D17833DAF00DC79D2 /* setup_linuxX86.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup_linuxX86.py; sourceTree = "<group>"; };
 		D65BE81E17833DAF00DC79D2 /* setup_msvc.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup_msvc.py; sourceTree = "<group>"; };
@@ -96,6 +97,7 @@
 				D65BE82D17833E6A00DC79D2 /* rjvbFilters.c */,
 				D65BE82E17833E6A00DC79D2 /* rjvbFilters.cpp */,
 				D65BE82F17833E6A00DC79D2 /* rjvbFilters.h */,
+				D64B7A54178CBFB200BE0684 /* savitzky_golay_filter2d.m */,
 			);
 			name = rjvbFilt;
 			sourceTree = "<group>";

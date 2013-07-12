@@ -30,3 +30,5 @@ CritSectEx/CritSectEx.py
 CritSectEx/msemul_wrap.cxx
 CritSectEx/CritSectEx_wrap.c
 CritSectEx/MSEmul.py
+savitzky_golay_filter2d.m
+SavGol.m

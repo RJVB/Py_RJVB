@@ -225,6 +225,10 @@ static PyObject *python_SavGolay2DCoeffs( PyObject *self, PyObject *args, PyObje
 				PyMem_Free(output);
 				output = NULL;
 			}
+//			if( !altSavGol2D( output, N, N, fo, fo ) ){
+//				PyMem_Free(output);
+//				output = NULL;
+//			}
 		}
 		else{
 			memset( output, 0, N * N * sizeof(double) );
