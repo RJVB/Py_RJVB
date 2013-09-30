@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
+//#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include "PythonHeader.h"
 #include "Py_InitModule.h"
 #if PY_MAJOR_VERSION >= 2
@@ -33,6 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #	error "not yet configured for this Python version"
 #endif
 
+#ifndef NPY_1_7_API_VERSION
+#	define NPY_ARRAY_OWNDATA	NPY_OWNDATA
+#endif
 
 #include <stdio.h>
 #include <math.h>
@@ -95,7 +100,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 
 	if( PyArray_Check(X) ){
 		xN= PyArray_Size(X);
-		if( (Xarr= (PyArrayObject*) PyArray_ContiguousFromObject( X, PyArray_DOUBLE, 0,0)) ){
+		if( (Xarr= (PyArrayObject*) PyArray_ContiguousFromObject( X, NPY_FLOAT, 0,0)) ){
 			Xarray= (double*) PyArray_DATA(Xarr);
 		}
 		else{
@@ -120,7 +125,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 	}
 	if( PyArray_Check(Y) ){
 		yN= PyArray_Size(Y);
-		if( (Yarr= (PyArrayObject*) PyArray_ContiguousFromObject( Y, PyArray_DOUBLE, 0,0)) ){
+		if( (Yarr= (PyArrayObject*) PyArray_ContiguousFromObject( Y, NPY_FLOAT64, 0,0)) ){
 			Yarray= (double*) PyArray_DATA(Yarr);
 		}
 		else{
@@ -144,7 +149,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 	}
 	if( PyArray_Check(Z) ){
 		zN= PyArray_Size(Z);
-		if( (Zarr= (PyArrayObject*) PyArray_ContiguousFromObject( Z, PyArray_DOUBLE, 0,0)) ){
+		if( (Zarr= (PyArrayObject*) PyArray_ContiguousFromObject( Z, NPY_FLOAT64, 0,0)) ){
 			Zarray= (double*) PyArray_DATA(Zarr);
 		}
 		else{
@@ -258,8 +263,8 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 		else{
 		  npy_intp dim[1] = {xN};
 // 			ret= PyArray_FromDimsAndData( 1, &xN, PyArray_DOUBLE, (char*) array );
-			ret= PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (char*) array );
-			((PyArrayObject*)ret)->flags|= NPY_OWNDATA;
+			ret= PyArray_SimpleNewFromData( 1, dim, NPY_FLOAT64, (char*) array );
+			((PyArrayObject*)ret)->flags|= NPY_ARRAY_OWNDATA;
 		}
 	}
 	else if( isTuple ){

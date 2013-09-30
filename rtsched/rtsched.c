@@ -43,7 +43,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
-#include <Python.h>
+//#include <Python.h>
+#include "../PythonHeader.h"
+#include "../Py_InitModule.h"
 
 /* our exceptions */
 static PyObject *SchedError;
@@ -487,7 +489,7 @@ static PyMethodDef rtsched_methods[] =
 /* function to help us insert values into the module dictionary */
 static void insint(PyObject *d, char *name, int value)
 {
-        PyObject *v = PyInt_FromLong((long) value);
+        PyObject *v = PyLong_FromLong((long) value);
         if (v == NULL) {
                 /* Don't bother reporting this error */
                 PyErr_Clear();
