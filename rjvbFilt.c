@@ -16,6 +16,8 @@ static const char modName[] = "rjvbFilt";
 #	define _USE_MATH_DEFINES
 #endif
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include "PythonHeader.h"
 #include "Py_InitModule.h"
 #if PY_MAJOR_VERSION >= 2
@@ -27,6 +29,16 @@ static const char modName[] = "rjvbFilt";
 #	endif // MS_WINDOWS
 #else
 #	error "not yet configured for this Python version"
+#endif
+
+#ifndef NPY_1_7_API_VERSION
+#	define NPY_ARRAY_OWNDATA	NPY_OWNDATA
+#else
+#	define NPY_OWNDATA	NPY_ARRAY_OWNDATA
+#	define PyArray_DOUBLE	NPY_FLOAT64
+#	define PyArray_INT		NPY_INT
+#	define PyArray_LONG		NPY_LONG
+#	define PyArray_OBJECT	NPY_OBJECT
 #endif
 
 #if defined(__GNUC__) && !defined(_GNU_SOURCE)
@@ -94,7 +106,7 @@ static PyObject *python_convolve( PyObject *self, PyObject *args )
 		if( output ){
 		  npy_intp dim[1]= {dataSeq.N};
 			ret= PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) output );
-			((PyArrayObject*)ret)->flags|= NPY_OWNDATA;
+			 PyArray_ENABLEFLAGS( (PyArrayObject*)ret, NPY_OWNDATA );
 		}
 	}
 	if( dataSeq.type ){
@@ -171,7 +183,7 @@ static PyObject *python_SavGolayCoeffs( PyObject *self, PyObject *args, PyObject
 		PyMem_Free(coeffs);
 		if( output ){
 			ret = PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) output );
-			((PyArrayObject*)ret)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)ret, NPY_OWNDATA );
 		}
 	}
 	else{
@@ -235,7 +247,7 @@ static PyObject *python_SavGolay2DCoeffs( PyObject *self, PyObject *args, PyObje
 		}
 		if( output ){
 			ret = PyArray_SimpleNewFromData( 2, dim, PyArray_DOUBLE, (void*) output );
-			((PyArrayObject*)ret)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)ret, NPY_OWNDATA );
 		}
 	}
 	else{
@@ -286,7 +298,7 @@ static PyObject *__python_Spline_Resample(int use_PWLInt, PyObject *OrgX, PyObje
 		if( resampledY ){
 		  npy_intp dim[1]= {resampledXSeq.N};
 			ResampledY= PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) resampledY );
-			((PyArrayObject*)ResampledY)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)ResampledY, NPY_OWNDATA );
 			if( retOX || retOY || coeffs ){
 			  int i, N = 1;
 				if( retOX ){
@@ -317,21 +329,21 @@ static PyObject *__python_Spline_Resample(int use_PWLInt, PyObject *OrgX, PyObje
 					if( retOX ){
 						dim[0] = (pad)? orgXSeq.N + 2 : orgXSeq.N;
 						RetOX = PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) retOX );
-						((PyArrayObject*)RetOX)->flags |= NPY_OWNDATA;
+						PyArray_ENABLEFLAGS( (PyArrayObject*)RetOX, NPY_OWNDATA );
 						PyTuple_SetItem(ret, i, RetOX );
 						i += 1;
 					}
 					if( retOY ){
 						dim[0] = (pad)? orgYSeq.N + 2 : orgYSeq.N;
 						RetOY = PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) retOY );
-						((PyArrayObject*)RetOY)->flags |= NPY_OWNDATA;
+						PyArray_ENABLEFLAGS( (PyArrayObject*)RetOY, NPY_OWNDATA );
 						PyTuple_SetItem(ret, i, RetOY );
 						i += 1;
 					}
 					if( coeffs ){
 						dim[0] = (pad)? orgXSeq.N + 2 : orgXSeq.N;
 						RetCoeffs = PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) coeffs );
-						((PyArrayObject*)RetCoeffs)->flags |= NPY_OWNDATA;
+						PyArray_ENABLEFLAGS( (PyArrayObject*)RetCoeffs, NPY_OWNDATA );
 						PyTuple_SetItem(ret, i, RetCoeffs );
 						i += 1;
 					}
@@ -427,7 +439,7 @@ static PyObject *python_EulerSum( PyObject *self, PyObject *args, PyObject *kw )
 			if( runsum && !ascanf_arg_error ){
 			  npy_intp dim[1]= {valsSeq.N};
 				ret= PyArray_SimpleNewFromData( 1, dim, PyArray_DOUBLE, (void*) runsum );
-				((PyArrayObject*)ret)->flags|= NPY_OWNDATA;
+				PyArray_ENABLEFLAGS( (PyArrayObject*)ret, NPY_OWNDATA );
 			}
 		}
 		else{

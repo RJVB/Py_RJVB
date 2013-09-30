@@ -297,7 +297,7 @@ SC2t_ESCAPE:;
 #endif
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( base && base != 1 ){
@@ -362,9 +362,9 @@ SC2t_ESCAPE:;
 // 			r1= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) sins );
 // 			r2= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) coss );
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) sins );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			r2= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) coss );
-			((PyArrayObject*)r2)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r2, NPY_OWNDATA );
 			ret= Py_BuildValue( "(OO)", r1, r2 );
 			Py_XDECREF(r1);
 			Py_XDECREF(r2);
@@ -492,7 +492,7 @@ SC2t_ESCAPE:;
 					angle= PyArrayBuf[i];
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( base && base != 1 ){
@@ -515,9 +515,9 @@ SC2t_ESCAPE:;
 // 			r1= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) sins );
 // 			r2= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) coss );
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) sins );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			r2= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) coss );
-			((PyArrayObject*)r2)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r2, NPY_OWNDATA );
 			ret= Py_BuildValue( "(OO)", r1, r2 );
 			Py_XDECREF(r1);
 			Py_XDECREF(r2);
@@ -939,7 +939,7 @@ SC2t_ESCAPE:;
 					angle= PyArrayBuf[i];
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( PyErr_Occurred() ){
@@ -958,7 +958,7 @@ SC2t_ESCAPE:;
 			}
 // 			r1= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) sins );
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) sins );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			ret= Py_BuildValue( "O", r1 );
 			Py_XDECREF(r1);
 			if( it ){
@@ -1059,7 +1059,7 @@ SC2t_ESCAPE:;
 					angle= PyArrayBuf[i];
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( PyErr_Occurred() ){
@@ -1078,7 +1078,7 @@ SC2t_ESCAPE:;
 			}
 // 			r1= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) coss );
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) coss );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			ret= Py_BuildValue( "O", r1 );
 			Py_XDECREF(r1);
 			if( it ){
@@ -1183,7 +1183,7 @@ SC2t_ESCAPE:;
 					angle= PyArrayBuf[i];
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( PyErr_Occurred() ){
@@ -1203,9 +1203,9 @@ SC2t_ESCAPE:;
 // 			r1= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) sins );
 // 			r2= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) coss );
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) sins );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			r2= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) coss );
-			((PyArrayObject*)r2)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r2, NPY_OWNDATA );
 			ret= Py_BuildValue( "(OO)", r1, r2 );
 			Py_XDECREF(r1);
 			Py_XDECREF(r2);
@@ -1324,7 +1324,7 @@ SC2t_ESCAPE:;
 					angle= PyArrayBuf[i];
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( base && base != 1 ){
@@ -1347,9 +1347,9 @@ SC2t_ESCAPE:;
 // 			r1= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) sins );
 // 			r2= PyArray_FromDimsAndData( 1, dims, PyArray_DOUBLE, (char*) coss );
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) sins );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			r2= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) coss );
-			((PyArrayObject*)r2)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r2, NPY_OWNDATA );
 			ret= Py_BuildValue( "(OO)", r1, r2 );
 			Py_XDECREF(r1);
 			Py_XDECREF(r2);
@@ -1470,7 +1470,7 @@ SC2t_ESCAPE:;
 					angle= PyArrayBuf[i];
 				}
 				else{
-					angle= PyFloat_AsDouble( parray->descr->f->getitem( it->dataptr, angles ) );
+					angle= PyFloat_AsDouble( PyArray_DESCR(parray)->f->getitem( it->dataptr, angles ) );
 				}
 
 				if( base && base != 1 ){
@@ -1490,9 +1490,9 @@ SC2t_ESCAPE:;
 				}
 			}
 			r1= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) sins );
-			((PyArrayObject*)r1)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r1, NPY_OWNDATA );
 			r2= PyArray_SimpleNewFromData( 1, dims, PyArray_DOUBLE, (char*) coss );
-			((PyArrayObject*)r2)->flags|= NPY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)r2, NPY_OWNDATA );
 			ret= Py_BuildValue( "(OO)", r1, r2 );
 			Py_XDECREF(r1);
 			Py_XDECREF(r2);

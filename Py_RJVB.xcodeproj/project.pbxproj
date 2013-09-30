@@ -30,12 +30,39 @@
 		D65BE83017833E7B00DC79D2 /* fmadd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmadd.c; sourceTree = "<group>"; };
 		D65BE83117833E7B00DC79D2 /* fmadd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fmadd.cpp; sourceTree = "<group>"; };
 		D65BE83A17833EC700DC79D2 /* sse_mathfun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sse_mathfun.h; path = sse_mathfun/sse_mathfun.h; sourceTree = "<group>"; };
+		D65E49EC17F9822500E851C5 /* __multiarray_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = __multiarray_api.h; path = /Library/Python/3.2/numpy/core/include/numpy/__multiarray_api.h; sourceTree = "<absolute>"; };
+		D65E49ED17F9822500E851C5 /* __ufunc_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = __ufunc_api.h; path = /Library/Python/3.2/numpy/core/include/numpy/__ufunc_api.h; sourceTree = "<absolute>"; };
+		D65E49EE17F9822500E851C5 /* _neighborhood_iterator_imp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _neighborhood_iterator_imp.h; path = /Library/Python/3.2/numpy/core/include/numpy/_neighborhood_iterator_imp.h; sourceTree = "<absolute>"; };
+		D65E49EF17F9822500E851C5 /* _numpyconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _numpyconfig.h; path = /Library/Python/3.2/numpy/core/include/numpy/_numpyconfig.h; sourceTree = "<absolute>"; };
+		D65E49F017F9822500E851C5 /* arrayobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = arrayobject.h; path = /Library/Python/3.2/numpy/core/include/numpy/arrayobject.h; sourceTree = "<absolute>"; };
+		D65E49F117F9822500E851C5 /* arrayscalars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = arrayscalars.h; path = /Library/Python/3.2/numpy/core/include/numpy/arrayscalars.h; sourceTree = "<absolute>"; };
+		D65E49F217F9822500E851C5 /* halffloat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = halffloat.h; path = /Library/Python/3.2/numpy/core/include/numpy/halffloat.h; sourceTree = "<absolute>"; };
+		D65E49F317F9822500E851C5 /* multiarray_api.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = multiarray_api.txt; path = /Library/Python/3.2/numpy/core/include/numpy/multiarray_api.txt; sourceTree = "<absolute>"; };
+		D65E49F417F9822500E851C5 /* ndarrayobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ndarrayobject.h; path = /Library/Python/3.2/numpy/core/include/numpy/ndarrayobject.h; sourceTree = "<absolute>"; };
+		D65E49F517F9822500E851C5 /* ndarraytypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ndarraytypes.h; path = /Library/Python/3.2/numpy/core/include/numpy/ndarraytypes.h; sourceTree = "<absolute>"; };
+		D65E49F617F9822500E851C5 /* noprefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = noprefix.h; path = /Library/Python/3.2/numpy/core/include/numpy/noprefix.h; sourceTree = "<absolute>"; };
+		D65E49F717F9822500E851C5 /* npy_3kcompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_3kcompat.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_3kcompat.h; sourceTree = "<absolute>"; };
+		D65E49F817F9822500E851C5 /* npy_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_common.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_common.h; sourceTree = "<absolute>"; };
+		D65E49F917F9822500E851C5 /* npy_cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_cpu.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_cpu.h; sourceTree = "<absolute>"; };
+		D65E49FA17F9822500E851C5 /* npy_deprecated_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_deprecated_api.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_deprecated_api.h; sourceTree = "<absolute>"; };
+		D65E49FB17F9822500E851C5 /* npy_endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_endian.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_endian.h; sourceTree = "<absolute>"; };
+		D65E49FC17F9822500E851C5 /* npy_interrupt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_interrupt.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_interrupt.h; sourceTree = "<absolute>"; };
+		D65E49FD17F9822500E851C5 /* npy_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_math.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_math.h; sourceTree = "<absolute>"; };
+		D65E49FE17F9822500E851C5 /* npy_no_deprecated_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_no_deprecated_api.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_no_deprecated_api.h; sourceTree = "<absolute>"; };
+		D65E49FF17F9822500E851C5 /* npy_os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = npy_os.h; path = /Library/Python/3.2/numpy/core/include/numpy/npy_os.h; sourceTree = "<absolute>"; };
+		D65E4A0017F9822500E851C5 /* numpyconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = numpyconfig.h; path = /Library/Python/3.2/numpy/core/include/numpy/numpyconfig.h; sourceTree = "<absolute>"; };
+		D65E4A0117F9822500E851C5 /* old_defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = old_defines.h; path = /Library/Python/3.2/numpy/core/include/numpy/old_defines.h; sourceTree = "<absolute>"; };
+		D65E4A0217F9822500E851C5 /* oldnumeric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oldnumeric.h; path = /Library/Python/3.2/numpy/core/include/numpy/oldnumeric.h; sourceTree = "<absolute>"; };
+		D65E4A0317F9822500E851C5 /* ufunc_api.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ufunc_api.txt; path = /Library/Python/3.2/numpy/core/include/numpy/ufunc_api.txt; sourceTree = "<absolute>"; };
+		D65E4A0417F9822500E851C5 /* ufuncobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ufuncobject.h; path = /Library/Python/3.2/numpy/core/include/numpy/ufuncobject.h; sourceTree = "<absolute>"; };
+		D65E4A0517F9822500E851C5 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = /Library/Python/3.2/numpy/core/include/numpy/utils.h; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		08FB7794FE84155DC02AAC07 /* Py_RJVB */ = {
 			isa = PBXGroup;
 			children = (
+				D65E49EB17F9822500E851C5 /* numpy-headers-3.2 */,
 				D65BE83217833E8700DC79D2 /* HRTime */,
 				D65BE82517833DF900DC79D2 /* rtsched.c */,
 				D65BE83317833E9100DC79D2 /* python code */,
@@ -111,12 +138,46 @@
 			name = fmadd;
 			sourceTree = "<group>";
 		};
+		D65E49EB17F9822500E851C5 /* numpy-headers-3.2 */ = {
+			isa = PBXGroup;
+			children = (
+				D65E49EC17F9822500E851C5 /* __multiarray_api.h */,
+				D65E49ED17F9822500E851C5 /* __ufunc_api.h */,
+				D65E49EE17F9822500E851C5 /* _neighborhood_iterator_imp.h */,
+				D65E49EF17F9822500E851C5 /* _numpyconfig.h */,
+				D65E49F017F9822500E851C5 /* arrayobject.h */,
+				D65E49F117F9822500E851C5 /* arrayscalars.h */,
+				D65E49F217F9822500E851C5 /* halffloat.h */,
+				D65E49F317F9822500E851C5 /* multiarray_api.txt */,
+				D65E49F417F9822500E851C5 /* ndarrayobject.h */,
+				D65E49F517F9822500E851C5 /* ndarraytypes.h */,
+				D65E49F617F9822500E851C5 /* noprefix.h */,
+				D65E49F717F9822500E851C5 /* npy_3kcompat.h */,
+				D65E49F817F9822500E851C5 /* npy_common.h */,
+				D65E49F917F9822500E851C5 /* npy_cpu.h */,
+				D65E49FA17F9822500E851C5 /* npy_deprecated_api.h */,
+				D65E49FB17F9822500E851C5 /* npy_endian.h */,
+				D65E49FC17F9822500E851C5 /* npy_interrupt.h */,
+				D65E49FD17F9822500E851C5 /* npy_math.h */,
+				D65E49FE17F9822500E851C5 /* npy_no_deprecated_api.h */,
+				D65E49FF17F9822500E851C5 /* npy_os.h */,
+				D65E4A0017F9822500E851C5 /* numpyconfig.h */,
+				D65E4A0117F9822500E851C5 /* old_defines.h */,
+				D65E4A0217F9822500E851C5 /* oldnumeric.h */,
+				D65E4A0317F9822500E851C5 /* ufunc_api.txt */,
+				D65E4A0417F9822500E851C5 /* ufuncobject.h */,
+				D65E4A0517F9822500E851C5 /* utils.h */,
+			);
+			name = "numpy-headers-3.2";
+			path = /Library/Python/3.2/numpy/core/include/numpy;
+			sourceTree = "<absolute>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
 		D28A88AD04BDD90700651E21 /* Py_RJVB-py27 */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "setup-vecLib.py build $ACTION";
+			buildArgumentsString = "setup-vecLib.py install";
 			buildConfigurationList = 1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "Py_RJVB-py27" */;
 			buildPhases = (
 			);
@@ -124,6 +185,19 @@
 			dependencies = (
 			);
 			name = "Py_RJVB-py27";
+			passBuildSettingsInEnvironment = 1;
+			productName = Py_RJVB;
+		};
+		D65E49D917F9813B00E851C5 /* Py_RJVB-py32 */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "setup-vecLib.py install";
+			buildConfigurationList = D65E49DA17F9813B00E851C5 /* Build configuration list for PBXLegacyTarget "Py_RJVB-py32" */;
+			buildPhases = (
+			);
+			buildToolPath = python3.2;
+			dependencies = (
+			);
+			name = "Py_RJVB-py32";
 			passBuildSettingsInEnvironment = 1;
 			productName = Py_RJVB;
 		};
@@ -150,6 +224,7 @@
 			projectRoot = "";
 			targets = (
 				D28A88AD04BDD90700651E21 /* Py_RJVB-py27 */,
+				D65E49D917F9813B00E851C5 /* Py_RJVB-py32 */,
 			);
 		};
 /* End PBXProject section */
@@ -204,6 +279,32 @@
 			};
 			name = Release;
 		};
+		D65E49DB17F9813B00E851C5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = Py_RJVB;
+			};
+			name = Debug;
+		};
+		D65E49DC17F9813B00E851C5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "Py_RJVB-py32";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -221,6 +322,15 @@
 			buildConfigurations = (
 				1DEB919408733D9F0010E9CD /* Debug */,
 				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D65E49DA17F9813B00E851C5 /* Build configuration list for PBXLegacyTarget "Py_RJVB-py32" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D65E49DB17F9813B00E851C5 /* Debug */,
+				D65E49DC17F9813B00E851C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

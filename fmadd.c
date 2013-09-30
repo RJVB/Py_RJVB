@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
-//#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 #include "PythonHeader.h"
 #include "Py_InitModule.h"
@@ -37,6 +37,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NPY_1_7_API_VERSION
 #	define NPY_ARRAY_OWNDATA	NPY_OWNDATA
+#else
+#	define NPY_OWNDATA	NPY_ARRAY_OWNDATA
+#	define PyArray_DOUBLE	NPY_FLOAT64
 #endif
 
 #include <stdio.h>
@@ -216,7 +219,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 				x= Xarray[i];
 			}
 			else{
-				x= PyFloat_AsDouble( Xarr->descr->f->getitem( Xit->dataptr, X ) );
+				x= PyFloat_AsDouble( PyArray_DESCR(Xarr)->f->getitem( Xit->dataptr, X ) );
 				PyArray_ITER_NEXT(Xit);
 			}
 		}
@@ -228,7 +231,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 				y= Yarray[i];
 			}
 			else{
-				y= PyFloat_AsDouble( Yarr->descr->f->getitem( Yit->dataptr, Y ) );
+				y= PyFloat_AsDouble( PyArray_DESCR(Yarr)->f->getitem( Yit->dataptr, Y ) );
 				PyArray_ITER_NEXT(Yit);
 			}
 		}
@@ -240,7 +243,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 				z= Zarray[i];
 			}
 			else{
-				z= PyFloat_AsDouble( Zarr->descr->f->getitem( Zit->dataptr, Z ) );
+				z= PyFloat_AsDouble( PyArray_DESCR(Zarr)->f->getitem( Zit->dataptr, Z ) );
 				PyArray_ITER_NEXT(Zit);
 			}
 		}
@@ -264,7 +267,7 @@ static PyObject *fmadd_fmadd2( PyObject *self, PyObject *args )
 		  npy_intp dim[1] = {xN};
 // 			ret= PyArray_FromDimsAndData( 1, &xN, PyArray_DOUBLE, (char*) array );
 			ret= PyArray_SimpleNewFromData( 1, dim, NPY_FLOAT64, (char*) array );
-			((PyArrayObject*)ret)->flags|= NPY_ARRAY_OWNDATA;
+			PyArray_ENABLEFLAGS( (PyArrayObject*)ret, NPY_ARRAY_OWNDATA );
 		}
 	}
 	else if( isTuple ){

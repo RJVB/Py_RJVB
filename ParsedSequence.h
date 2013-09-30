@@ -38,7 +38,7 @@ static PyObject *ParseSequence( PyObject *var, ParsedSequences *pseq, PyObject *
 			PyErr_Clear();
 			for( i= 0; ok && i< pseq->N; i++ ){
 				if( it->index < it->size ){
-					PyObject *elem= parray->descr->f->getitem( it->dataptr, var);
+					PyObject *elem= PyArray_DESCR(parray)->f->getitem( it->dataptr, var);
 					if( PyInt_Check(elem) || PyLong_Check(elem) || PyFloat_Check(elem) ){
 						pseq->array[i] = PyFloat_AsDouble(elem);
 						PyArray_ITER_NEXT(it);
