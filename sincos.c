@@ -76,7 +76,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #		include "sse_mathfun/sse_mathfun.h"
 
 		void sincos_sse(double x, double *s, double *c )
-		{ v4sf xx, ss, cc;
+		{ volatile v4sf xx, ss, cc;
 //  			xx = _mm_set_ps1(x);
  			((float*)&xx)[0] = (float) x;
 			sincos_ps(xx, &ss, &cc);
@@ -98,7 +98,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #			include "sse_mathfun/sse_mathfun.h"
 
 			void sincos_sse(double x, double *s, double *c )
-			{ v4sf xx, ss, cc;
+			{ volatile v4sf xx, ss, cc;
 // 				xx = _mm_set_ps1(x);
 				((float*)&xx)[0] = (float) x;
 				sincos_ps(xx, &ss, &cc);
